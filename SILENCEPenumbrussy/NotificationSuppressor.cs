@@ -96,27 +96,10 @@ internal sealed class NotificationSuppressor
 
         if (configuration.StrictTextMatch)
         {
-            if (titleMatch && contentMatch)
-            {
-                return true;
-            }
-
-            return ContainsImportProgressText(title) || ContainsImportProgressText(content);
+            return titleMatch && contentMatch;
         }
 
-        return titleMatch || contentMatch || ContainsImportKeyword(title) || ContainsImportKeyword(content);
-    }
-
-    private static bool ContainsImportProgressText(string text)
-    {
-        return text.Contains("Importing", StringComparison.OrdinalIgnoreCase)
-            || text.Contains("Extracting", StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static bool ContainsImportKeyword(string text)
-    {
-        return text.Contains("Import", StringComparison.OrdinalIgnoreCase)
-            || text.Contains("Extract", StringComparison.OrdinalIgnoreCase);
+        return titleMatch || contentMatch;
     }
 
     private bool IsPenumbraErrorNotification(IActiveNotification notification)

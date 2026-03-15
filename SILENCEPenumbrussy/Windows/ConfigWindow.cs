@@ -51,7 +51,7 @@ public class ConfigWindow : Window, IDisposable
 
         ImGui.BeginDisabled(!configuration.Enabled);
         var suppress = configuration.SuppressModComplete;
-        if (ImGui.Checkbox("Suppress mod import toasts", ref suppress))
+        if (ImGui.Checkbox("Suppress mod-complete toasts", ref suppress))
         {
             configuration.SuppressModComplete = suppress;
             configuration.Save();
