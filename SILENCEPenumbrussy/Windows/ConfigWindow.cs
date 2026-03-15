@@ -93,7 +93,7 @@ public class ConfigWindow : Window, IDisposable
         }
 
         var removeErrorMessages = configuration.RemovePenumbraErrorMessages;
-        if (ImGui.Checkbox("Automatically prune error messages from Penumbra's Messages tab", ref removeErrorMessages))
+        if (ImGui.Checkbox("Automatically prune error messages logged in Penumbra's Messages tab", ref removeErrorMessages))
         {
             configuration.RemovePenumbraErrorMessages = removeErrorMessages;
             configuration.Save();
@@ -106,7 +106,7 @@ public class ConfigWindow : Window, IDisposable
             configuration.Save();
         }
 
-        ImGui.TextWrapped("Targets \"Forbidden File Redirection\" and \"Collection without ID found\" messages.");
+        ImGui.TextWrapped("Targets \"Forbidden File Encountered\", \"Forbidden File Redirection\", and \"Collection without ID found\" messages.");
         ImGui.EndDisabled();
 
         ImGui.Spacing();

@@ -20,5 +20,5 @@ Open settings with `/silencepenumbrussy`.
 * Suppress mod-complete toasts: hides the mod-complete toast on spawn.
 * Match Penumbra source only: targets only notifications initiated by Penumbra when available.
 * Require both import and extract text: stricter text match to avoid false positives.
-* Suppress error toasts: hides Penumbra error toasts like Forbidden File Redirection or Collection without ID found.
-* Automatically prune error messages from Penumbra's Messages tab.
+* Suppress error toasts: hides Penumbra error toasts like Forbidden File Encountered / Forbidden File Redirection or Collection without ID found.
+* Automatically prune error messages logged in Penumbra's Messages tab.
