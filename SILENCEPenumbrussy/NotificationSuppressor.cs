@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface.ImGuiNotification;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
@@ -190,6 +191,25 @@ internal sealed class NotificationSuppressor
 
         return text.Contains("Forbidden File Redirection", StringComparison.OrdinalIgnoreCase)
             || text.Contains("Collection without ID", StringComparison.OrdinalIgnoreCase);
+    }
+
+    public void HandleErrorToast(ref SeString message, ref bool isHandled)
+    {
+        if (isHandled)
+        {
+            return;
+        }
+
+        if (!configuration.Enabled || !configuration.SuppressPenumbraErrorToasts)
+        {
+            return;
+        }
+
+        var text = message.TextValue;
+        if (ContainsPenumbraErrorText(text))
+        {
+            isHandled = true;
+        }
     }
 
     private sealed class PenumbraMessageReflection

@@ -13,6 +13,7 @@ public sealed class Plugin : IDalamudPlugin
     [PluginService] internal static ICommandManager CommandManager { get; private set; } = null!;
     [PluginService] internal static IFramework Framework { get; private set; } = null!;
     [PluginService] internal static IPluginLog Log { get; private set; } = null!;
+    [PluginService] internal static IToastGui ToastGui { get; private set; } = null!;
 
     private const string CommandName = "/silencepenumbrussy";
 
@@ -21,6 +22,7 @@ public sealed class Plugin : IDalamudPlugin
     public readonly WindowSystem WindowSystem = new("SILENCEPenumbrussy");
     private ConfigWindow ConfigWindow { get; init; }
     private NotificationSuppressor NotificationSuppressor { get; init; }
+    private ToastHook ToastHook { get; init; }
 
     public Plugin()
     {
@@ -28,6 +30,7 @@ public sealed class Plugin : IDalamudPlugin
 
         ConfigWindow = new ConfigWindow(this);
         NotificationSuppressor = new NotificationSuppressor(Configuration, Log);
+        ToastHook = new ToastHook(NotificationSuppressor, Log);
 
         WindowSystem.AddWindow(ConfigWindow);
 
@@ -45,6 +48,7 @@ public sealed class Plugin : IDalamudPlugin
         PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUi;
 
         Framework.Update += NotificationSuppressor.Update;
+        ToastHook.Initialize(ToastGui);
 
         // Add a simple message to the log with level set to information
         // Use /xllog to open the log window in-game
@@ -58,6 +62,7 @@ public sealed class Plugin : IDalamudPlugin
         PluginInterface.UiBuilder.Draw -= WindowSystem.Draw;
         PluginInterface.UiBuilder.OpenConfigUi -= ToggleConfigUi;
         Framework.Update -= NotificationSuppressor.Update;
+        ToastHook.Dispose();
         
         WindowSystem.RemoveAllWindows();
 
