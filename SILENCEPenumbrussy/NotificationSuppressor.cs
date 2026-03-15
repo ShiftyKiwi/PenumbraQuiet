@@ -53,7 +53,7 @@ internal sealed class NotificationSuppressor
                         continue;
                     }
 
-                    if (handleModComplete && IsModCompleteNotification(notification))
+                    if (handleModComplete && IsModImportNotification(notification))
                     {
                         if (configuration.SuppressModComplete)
                         {
@@ -81,7 +81,7 @@ internal sealed class NotificationSuppressor
         }
     }
 
-    private bool IsModCompleteNotification(IActiveNotification notification)
+    private bool IsModImportNotification(IActiveNotification notification)
     {
         if (!IsPenumbraSource(notification))
         {
@@ -96,10 +96,27 @@ internal sealed class NotificationSuppressor
 
         if (configuration.StrictTextMatch)
         {
-            return titleMatch && contentMatch;
+            if (titleMatch && contentMatch)
+            {
+                return true;
+            }
+
+            return ContainsImportProgressText(title) || ContainsImportProgressText(content);
         }
 
-        return titleMatch || contentMatch;
+        return titleMatch || contentMatch || ContainsImportKeyword(title) || ContainsImportKeyword(content);
+    }
+
+    private static bool ContainsImportProgressText(string text)
+    {
+        return text.Contains("Importing", StringComparison.OrdinalIgnoreCase)
+            || text.Contains("Extracting", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool ContainsImportKeyword(string text)
+    {
+        return text.Contains("Import", StringComparison.OrdinalIgnoreCase)
+            || text.Contains("Extract", StringComparison.OrdinalIgnoreCase);
     }
 
     private bool IsPenumbraErrorNotification(IActiveNotification notification)
@@ -203,6 +220,11 @@ internal sealed class NotificationSuppressor
         private MethodInfo? removeMethod;
         private PropertyInfo? entryKeyProperty;
         private PropertyInfo? entryValueProperty;
+        private FieldInfo? taggedMessagesField;
+        private MethodInfo? taggedRemoveMethod;
+        private PropertyInfo? taggedEntryKeyProperty;
+        private PropertyInfo? taggedEntryValueProperty;
+        private PropertyInfo? taggedValueItem2Property;
         private bool initialized;
         private bool failed;
 
@@ -274,46 +296,90 @@ internal sealed class NotificationSuppressor
         {
             try
             {
-                if (!TryGetMessageDictionary(out var messages))
+                if (!TryGetMessageStores(out var messages, out var taggedMessages))
                 {
                     return;
                 }
 
-                if (messages is not IEnumerable entries)
+                if (messages is IEnumerable entries)
                 {
-                    return;
-                }
-
-                var keysToRemove = new List<object>();
-                foreach (var entry in entries)
-                {
-                    if (!TryGetEntryParts(entry, messages, out var key, out var message))
+                    var keysToRemove = new List<object>();
+                    foreach (var entry in entries)
                     {
-                        continue;
+                        if (!TryGetEntryParts(entry, messages!, out var key, out var message))
+                        {
+                            continue;
+                        }
+
+                        if (message == null || key == null)
+                        {
+                            continue;
+                        }
+
+                        if (!shouldRemove(message))
+                        {
+                            continue;
+                        }
+
+                        TryInvokeOnRemoval(message);
+                        keysToRemove.Add(key);
                     }
 
-                    if (message == null || key == null)
+                    if (keysToRemove.Count != 0 && removeMethod != null)
                     {
-                        continue;
+                        foreach (var key in keysToRemove)
+                        {
+                            removeMethod.Invoke(messages, new[] { key });
+                        }
                     }
-
-                    if (!shouldRemove(message))
-                    {
-                        continue;
-                    }
-
-                    TryInvokeOnRemoval(message);
-                    keysToRemove.Add(key);
                 }
 
-                if (keysToRemove.Count == 0 || removeMethod == null)
+                if (taggedMessages is IEnumerable taggedEntries)
                 {
-                    return;
-                }
+                    var tagKeysToRemove = new List<object>();
+                    foreach (var entry in taggedEntries)
+                    {
+                        if (!TryGetTaggedEntryParts(entry, taggedMessages!, out var key, out var message))
+                        {
+                            continue;
+                        }
 
-                foreach (var key in keysToRemove)
-                {
-                    removeMethod.Invoke(messages, new[] { key });
+                        if (message == null || key == null)
+                        {
+                            continue;
+                        }
+
+                        if (!shouldRemove(message))
+                        {
+                            continue;
+                        }
+
+                        TryInvokeOnRemoval(message);
+                        tagKeysToRemove.Add(key);
+                    }
+
+                    if (tagKeysToRemove.Count != 0 && taggedRemoveMethod != null)
+                    {
+                        var removeParameters = taggedRemoveMethod.GetParameters();
+                        foreach (var key in tagKeysToRemove)
+                        {
+                            if (removeParameters.Length == 1)
+                            {
+                                taggedRemoveMethod.Invoke(taggedMessages, new[] { key });
+                            }
+                            else if (removeParameters.Length == 2)
+                            {
+                                var valueType = removeParameters[1].ParameterType.GetElementType();
+                                var outValue = valueType == null
+                                    ? null
+                                    : valueType.IsValueType
+                                        ? Activator.CreateInstance(valueType)
+                                        : null;
+                                var args = new[] { key, outValue };
+                                taggedRemoveMethod.Invoke(taggedMessages, args);
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -326,9 +392,10 @@ internal sealed class NotificationSuppressor
             }
         }
 
-        private bool TryGetMessageDictionary(out object? messages)
+        private bool TryGetMessageStores(out object? messages, out object? taggedMessages)
         {
             messages = null;
+            taggedMessages = null;
 
             if (pluginManager == null || installedPluginsProperty == null)
             {
@@ -373,18 +440,20 @@ internal sealed class NotificationSuppressor
                 }
 
                 messagesField ??= FindFieldInHierarchy(messageService.GetType(), "_messages");
-                if (messagesField == null)
+                messagesField ??= FindFieldInHierarchy(messageService.GetType(), "_messages");
+                taggedMessagesField ??= FindFieldInHierarchy(messageService.GetType(), "_taggedMessages");
+
+                if (messagesField != null)
                 {
-                    return false;
+                    messages = messagesField.GetValue(messageService);
                 }
 
-                messages = messagesField.GetValue(messageService);
-                if (messages == null)
+                if (taggedMessagesField != null)
                 {
-                    return false;
+                    taggedMessages = taggedMessagesField.GetValue(messageService);
                 }
 
-                return true;
+                return messages != null || taggedMessages != null;
             }
 
             return false;
@@ -420,35 +489,86 @@ internal sealed class NotificationSuppressor
             message = entryValueProperty.GetValue(entry);
             if (entryKeyProperty.PropertyType != null)
             {
-                EnsureRemoveMethod(messages, entryKeyProperty.PropertyType);
+                EnsureRemoveMethod(messages, entryKeyProperty.PropertyType, entryValueProperty?.PropertyType, ref removeMethod);
             }
 
             return key != null && message != null;
         }
 
-        private void EnsureRemoveMethod(object messages, Type? keyType)
+        private bool TryGetTaggedEntryParts(object entry, object taggedMessages, out object? key, out object? message)
         {
-            if (removeMethod != null)
+            key = null;
+            message = null;
+
+            var entryType = entry.GetType();
+            if (taggedEntryKeyProperty == null || taggedEntryKeyProperty.DeclaringType != entryType)
+            {
+                taggedEntryKeyProperty = entryType.GetProperty("Key", BindingFlags.Instance | BindingFlags.Public);
+                taggedEntryValueProperty = entryType.GetProperty("Value", BindingFlags.Instance | BindingFlags.Public);
+            }
+
+            if (taggedEntryKeyProperty == null || taggedEntryValueProperty == null)
+            {
+                return false;
+            }
+
+            key = taggedEntryKeyProperty.GetValue(entry);
+            var value = taggedEntryValueProperty.GetValue(entry);
+            if (value == null)
+            {
+                return false;
+            }
+
+            if (taggedValueItem2Property == null || taggedValueItem2Property.DeclaringType != value.GetType())
+            {
+                taggedValueItem2Property = value.GetType().GetProperty("Item2", BindingFlags.Instance | BindingFlags.Public);
+            }
+
+            message = taggedValueItem2Property?.GetValue(value);
+            EnsureRemoveMethod(taggedMessages, taggedEntryKeyProperty.PropertyType, value.GetType(), ref taggedRemoveMethod);
+            return key != null && message != null;
+        }
+
+        private void EnsureRemoveMethod(object messages, Type? keyType, Type? valueType, ref MethodInfo? removeMethodField)
+        {
+            if (removeMethodField != null)
             {
                 return;
             }
 
             if (keyType != null)
             {
-                removeMethod = messages.GetType().GetMethod(
+                removeMethodField = messages.GetType().GetMethod(
                     "Remove",
                     BindingFlags.Instance | BindingFlags.Public,
                     null,
                     new[] { keyType },
                     null);
+
+                if (removeMethodField == null && valueType != null)
+                {
+                    removeMethodField = messages.GetType().GetMethod(
+                        "TryRemove",
+                        BindingFlags.Instance | BindingFlags.Public,
+                        null,
+                        new[] { keyType, valueType.MakeByRefType() },
+                        null);
+                }
             }
 
-            if (removeMethod == null)
+            if (removeMethodField == null)
             {
                 var methods = messages.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public);
-                removeMethod = methods.FirstOrDefault(method =>
+                removeMethodField = methods.FirstOrDefault(method =>
                     string.Equals(method.Name, "Remove", StringComparison.Ordinal) &&
                     method.GetParameters().Length == 1);
+
+                if (removeMethodField == null)
+                {
+                    removeMethodField = methods.FirstOrDefault(method =>
+                        string.Equals(method.Name, "TryRemove", StringComparison.Ordinal) &&
+                        method.GetParameters().Length == 2);
+                }
             }
         }
 

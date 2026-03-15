@@ -2,11 +2,11 @@
   {
     "Author": "ShiftyKiwi",
     "Name": "SILENCEPenumbrussy",
-    "Punchline": "Silence Penumbra mod-complete notifications.",
-    "Description": "Suppress Penumbra mod import completion notifications and selected error toasts. The command to open the settings menu is /silencepenumbrussy.",
-    "Changelog": "Removed mod-complete auto-dismiss in favor of a single suppress toggle. Added error toast/message filters.",
+    "Punchline": "Silence Penumbra mod import notifications.",
+    "Description": "Suppress Penumbra mod import toasts and selected error notifications. The command to open the settings menu is /silencepenumbrussy.",
+    "Changelog": "Suppress mod import toasts immediately and prune error messages from the Messages tab.",
     "InternalName": "SILENCEPenumbrussy",
-    "AssemblyVersion": "0.0.0.4",
+    "AssemblyVersion": "0.0.0.5",
     "ApplicableVersion": "2026.03.07.0000.0000",
     "DalamudApiLevel": 14,
     "RepoUrl": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy",
@@ -15,9 +15,9 @@
       "notifications",
       "utility"
     ],
-    "DownloadLinkInstall": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy/releases/download/v0.0.0.4/latest.zip",
-    "DownloadLinkUpdate": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy/releases/download/v0.0.0.4/latest.zip",
-    "DownloadLinkTesting": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy/releases/download/v0.0.0.4/latest.zip",
+    "DownloadLinkInstall": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy/releases/download/v0.0.0.5/latest.zip",
+    "DownloadLinkUpdate": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy/releases/download/v0.0.0.5/latest.zip",
+    "DownloadLinkTesting": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy/releases/download/v0.0.0.5/latest.zip",
     "IsTestingExclusive": false
   }
 ]
