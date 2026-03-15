@@ -319,6 +319,13 @@ internal sealed class NotificationSuppressor
         private bool initialized;
         private bool failed;
         private bool debugStoreLogged;
+        private bool debugPluginsLogged;
+        private bool debugPenumbraMatchedLogged;
+        private bool debugPenumbraMissingLogged;
+        private bool debugInstanceMissingLogged;
+        private bool debugMessagerMissingLogged;
+        private bool debugMessageFieldMissingLogged;
+        private DateTime lastNotAvailableLog;
         private readonly HashSet<string> debugLoggedEntries = new(StringComparer.Ordinal);
 
         public bool TryInitialize(IPluginLog log, ref bool warned)
@@ -361,6 +368,13 @@ internal sealed class NotificationSuppressor
                 localPluginNameProperty = localPluginType?.GetProperty("Name", BindingFlags.Instance | BindingFlags.Public);
                 localPluginInternalNameProperty = localPluginType?.GetProperty("InternalName", BindingFlags.Instance | BindingFlags.Public);
                 localPluginInstanceField = localPluginType?.GetField("instance", BindingFlags.Instance | BindingFlags.NonPublic);
+                if (localPluginInstanceField == null && localPluginType != null)
+                {
+                    localPluginInstanceField = localPluginType
+                        .GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
+                        .FirstOrDefault(field =>
+                            string.Equals(field.FieldType.FullName, typeof(IDalamudPlugin).FullName, StringComparison.Ordinal));
+                }
 
                 initialized = installedPluginsProperty != null &&
                     localPluginInstanceField != null &&
@@ -393,12 +407,9 @@ internal sealed class NotificationSuppressor
         {
             try
             {
-                if (!TryGetMessageStores(out var messages, out var taggedMessages))
+                if (!TryGetMessageStores(out var messages, out var taggedMessages, debugEnabled, log))
                 {
-                    if (debugEnabled)
-                    {
-                        DebugLog(log, "Message stores not available yet.");
-                    }
+                    DebugLogNotAvailable(log, debugEnabled);
                     return;
                 }
 
@@ -522,36 +533,67 @@ internal sealed class NotificationSuppressor
             }
         }
 
-        private bool TryGetMessageStores(out object? messages, out object? taggedMessages)
+        private bool TryGetMessageStores(out object? messages, out object? taggedMessages, bool debugEnabled, IPluginLog log)
         {
             messages = null;
             taggedMessages = null;
 
             if (pluginManager == null || installedPluginsProperty == null)
             {
+                if (debugEnabled)
+                {
+                    DebugLog(log, "Plugin manager service not available.");
+                }
                 return false;
             }
 
             if (installedPluginsProperty.GetValue(pluginManager) is not IEnumerable plugins)
             {
+                if (debugEnabled)
+                {
+                    DebugLog(log, "Installed plugins list not available.");
+                }
                 return false;
             }
 
-            foreach (var plugin in plugins)
+            var pluginList = plugins.Cast<object>().ToList();
+            if (debugEnabled && !debugPluginsLogged)
+            {
+                DebugLogPlugins(log, pluginList);
+                debugPluginsLogged = true;
+            }
+
+            foreach (var plugin in pluginList)
             {
                 if (!IsPenumbraPlugin(plugin))
                 {
                     continue;
                 }
 
+                if (debugEnabled && !debugPenumbraMatchedLogged)
+                {
+                    DebugLog(log, $"Matched Penumbra plugin entry (Name: {GetPluginName(plugin)}, InternalName: {GetPluginInternalName(plugin)}).");
+                    debugPenumbraMatchedLogged = true;
+                }
+
                 if (localPluginInstanceField == null)
                 {
+                    if (debugEnabled && !debugInstanceMissingLogged)
+                    {
+                        DebugLog(log, "Penumbra plugin instance field not found.");
+                        debugInstanceMissingLogged = true;
+                    }
                     return false;
                 }
 
                 var instance = localPluginInstanceField.GetValue(plugin);
                 if (instance == null)
                 {
+                    if (debugEnabled && !debugInstanceMissingLogged)
+                    {
+                        DebugLog(log, "Penumbra plugin instance not available yet.");
+                        debugInstanceMissingLogged = true;
+                    }
                     return false;
                 }
 
@@ -560,18 +602,37 @@ internal sealed class NotificationSuppressor
                     BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                 if (messagerProperty == null)
                 {
+                    if (debugEnabled && !debugMessagerMissingLogged)
+                    {
+                        DebugLog(log, "Penumbra Messager property not found on plugin instance.");
+                        debugMessagerMissingLogged = true;
+                    }
                     return false;
                 }
 
                 var messageService = messagerProperty.GetValue(instance);
                 if (messageService == null)
                 {
+                    if (debugEnabled && !debugMessagerMissingLogged)
+                    {
+                        DebugLog(log, "Penumbra Messager service was null.");
+                        debugMessagerMissingLogged = true;
+                    }
                     return false;
                 }
 
                 messagesField ??= FindFieldInHierarchy(messageService.GetType(), "_messages");
-                messagesField ??= FindFieldInHierarchy(messageService.GetType(), "_messages");
                 taggedMessagesField ??= FindFieldInHierarchy(messageService.GetType(), "_taggedMessages");
+
+                if (messagesField == null && taggedMessagesField == null)
+                {
+                    if (debugEnabled && !debugMessageFieldMissingLogged)
+                    {
+                        DebugLog(log, "Penumbra message fields were not found on Messager.");
+                        debugMessageFieldMissingLogged = true;
+                    }
+                    return false;
+                }
 
                 if (messagesField != null)
                 {
@@ -584,6 +645,12 @@ internal sealed class NotificationSuppressor
                 }
 
                 return messages != null || taggedMessages != null;
+            }
+
+            if (debugEnabled && !debugPenumbraMissingLogged)
+            {
+                DebugLog(log, "Penumbra plugin not found in installed plugin list.");
+                debugPenumbraMissingLogged = true;
             }
 
             return false;
@@ -831,6 +898,53 @@ internal sealed class NotificationSuppressor
         private void DebugLog(IPluginLog log, string message)
         {
             log.Information("SILENCEPenumbrussy debug: {Message}", message);
+        }
+
+        private void DebugLogNotAvailable(IPluginLog log, bool debugEnabled)
+        {
+            if (!debugEnabled)
+            {
+                return;
+            }
+
+            var now = DateTime.UtcNow;
+            if (now - lastNotAvailableLog < TimeSpan.FromSeconds(10))
+            {
+                return;
+            }
+
+            lastNotAvailableLog = now;
+            DebugLog(log, "Message stores not available yet.");
+        }
+
+        private void DebugLogPlugins(IPluginLog log, IReadOnlyList<object> plugins)
+        {
+            var entries = new List<string>();
+            var count = 0;
+
+            foreach (var plugin in plugins)
+            {
+                count++;
+                if (entries.Count >= 25)
+                {
+                    continue;
+                }
+
+                entries.Add($"{GetPluginName(plugin)} ({GetPluginInternalName(plugin)})");
+            }
+
+            var suffix = count > entries.Count ? ", ..." : string.Empty;
+            DebugLog(log, $"Installed plugins ({count}): {string.Join(", ", entries)}{suffix}");
+        }
+
+        private string GetPluginName(object plugin)
+        {
+            return localPluginNameProperty?.GetValue(plugin) as string ?? "<unknown>";
+        }
+
+        private string GetPluginInternalName(object plugin)
+        {
+            return localPluginInternalNameProperty?.GetValue(plugin) as string ?? "<unknown>";
         }
     }
 
