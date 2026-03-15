@@ -14,6 +14,7 @@ public class Configuration : IPluginConfiguration
     public bool StrictTextMatch { get; set; } = true;
     public bool SuppressPenumbraErrorToasts { get; set; } = false;
     public bool RemovePenumbraErrorMessages { get; set; } = false;
+    public bool DebugPenumbraMessages { get; set; } = false;
     public bool IsConfigWindowMovable { get; set; } = true;
 
     // The below exists just to make saving less cumbersome

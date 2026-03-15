@@ -77,7 +77,11 @@ internal sealed class NotificationSuppressor
             lastMessageCleanup = now;
             if (messageReflection.TryInitialize(log, ref messageWarned))
             {
-                messageReflection.RemoveMatchingMessages(IsPenumbraErrorMessage, log, ref messageWarned);
+                messageReflection.RemoveMatchingMessages(
+                    IsPenumbraErrorMessage,
+                    log,
+                    ref messageWarned,
+                    configuration.DebugPenumbraMessages);
             }
         }
     }
@@ -314,6 +318,8 @@ internal sealed class NotificationSuppressor
         private PropertyInfo? taggedValueItem2Property;
         private bool initialized;
         private bool failed;
+        private bool debugStoreLogged;
+        private readonly HashSet<string> debugLoggedEntries = new(StringComparer.Ordinal);
 
         public bool TryInitialize(IPluginLog log, ref bool warned)
         {
@@ -379,17 +385,30 @@ internal sealed class NotificationSuppressor
             }
         }
 
-        public void RemoveMatchingMessages(Func<object, bool> shouldRemove, IPluginLog log, ref bool warned)
+        public void RemoveMatchingMessages(
+            Func<object, bool> shouldRemove,
+            IPluginLog log,
+            ref bool warned,
+            bool debugEnabled)
         {
             try
             {
                 if (!TryGetMessageStores(out var messages, out var taggedMessages))
                 {
+                    if (debugEnabled)
+                    {
+                        DebugLog(log, "Message stores not available yet.");
+                    }
                     return;
                 }
 
                 if (messages is IEnumerable entries)
                 {
+                    if (debugEnabled)
+                    {
+                        DebugLogStore(log, "messages", messages);
+                    }
+
                     var keysToRemove = new List<object>();
                     foreach (var entry in entries)
                     {
@@ -401,6 +420,11 @@ internal sealed class NotificationSuppressor
                         if (message == null || key == null)
                         {
                             continue;
+                        }
+
+                        if (debugEnabled)
+                        {
+                            DebugLogEntry(log, "messages", key, message);
                         }
 
                         if (!shouldRemove(message))
@@ -417,12 +441,21 @@ internal sealed class NotificationSuppressor
                         foreach (var key in keysToRemove)
                         {
                             removeMethod.Invoke(messages, new[] { key });
+                            if (debugEnabled)
+                            {
+                                DebugLog(log, $"Removed message entry {key}.");
+                            }
                         }
                     }
                 }
 
                 if (taggedMessages is IEnumerable taggedEntries)
                 {
+                    if (debugEnabled)
+                    {
+                        DebugLogStore(log, "taggedMessages", taggedMessages);
+                    }
+
                     var tagKeysToRemove = new List<object>();
                     foreach (var entry in taggedEntries)
                     {
@@ -434,6 +467,11 @@ internal sealed class NotificationSuppressor
                         if (message == null || key == null)
                         {
                             continue;
+                        }
+
+                        if (debugEnabled)
+                        {
+                            DebugLogEntry(log, "taggedMessages", key, message);
                         }
 
                         if (!shouldRemove(message))
@@ -464,6 +502,11 @@ internal sealed class NotificationSuppressor
                                         : null;
                                 var args = new[] { key, outValue };
                                 taggedRemoveMethod.Invoke(taggedMessages, args);
+                            }
+
+                            if (debugEnabled)
+                            {
+                                DebugLog(log, $"Removed tagged message entry {key}.");
                             }
                         }
                     }
@@ -692,6 +735,102 @@ internal sealed class NotificationSuppressor
 
             failed = true;
             return false;
+        }
+
+        private void DebugLogStore(IPluginLog log, string name, object store)
+        {
+            if (debugStoreLogged)
+            {
+                return;
+            }
+
+            debugStoreLogged = true;
+            var count = TryGetCount(store);
+            if (count.HasValue)
+            {
+                DebugLog(log, $"Found Penumbra {name} store with {count.Value} entries.");
+            }
+            else
+            {
+                DebugLog(log, $"Found Penumbra {name} store.");
+            }
+        }
+
+        private void DebugLogEntry(IPluginLog log, string storeName, object key, object message)
+        {
+            var entryId = $"{storeName}:{key}:{message.GetType().FullName}";
+            if (!debugLoggedEntries.Add(entryId))
+            {
+                return;
+            }
+
+            var candidates = CollectMessageCandidates(message);
+            var preview = candidates.Count == 0
+                ? "<no string candidates>"
+                : string.Join(" | ", candidates.Select(TrimCandidate));
+
+            DebugLog(log, $"{storeName} entry {key} ({message.GetType().FullName}): {preview}");
+        }
+
+        private static List<string> CollectMessageCandidates(object message)
+        {
+            var results = new List<string>();
+
+            foreach (var text in EnumerateMessageTextCandidates(message))
+            {
+                AddCandidate(results, text);
+            }
+
+            foreach (var text in EnumerateAdditionalMessageTextCandidates(message))
+            {
+                AddCandidate(results, text);
+            }
+
+            var fallback = message.ToString();
+            AddCandidate(results, fallback);
+
+            return results;
+        }
+
+        private static void AddCandidate(ICollection<string> results, string? text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return;
+            }
+
+            if (!results.Contains(text))
+            {
+                results.Add(text);
+            }
+        }
+
+        private static string TrimCandidate(string text)
+        {
+            const int maxLength = 120;
+            return text.Length <= maxLength ? text : text.Substring(0, maxLength) + "...";
+        }
+
+        private static int? TryGetCount(object store)
+        {
+            var countProperty = store.GetType().GetProperty("Count", BindingFlags.Instance | BindingFlags.Public);
+            if (countProperty == null)
+            {
+                return null;
+            }
+
+            var value = countProperty.GetValue(store);
+            return value switch
+            {
+                int count => count,
+                long count => count > int.MaxValue ? int.MaxValue : (int)count,
+                _ => null,
+            };
+        }
+
+        private void DebugLog(IPluginLog log, string message)
+        {
+            log.Information("SILENCEPenumbrussy debug: {Message}", message);
         }
     }
 

@@ -94,6 +94,13 @@ public class ConfigWindow : Window, IDisposable
             configuration.Save();
         }
 
+        var debugMessages = configuration.DebugPenumbraMessages;
+        if (ImGui.Checkbox("Debug message pruning (logs to /xllog)", ref debugMessages))
+        {
+            configuration.DebugPenumbraMessages = debugMessages;
+            configuration.Save();
+        }
+
         ImGui.TextWrapped("Targets \"Forbidden File Redirection\" and \"Collection without ID found\" messages.");
         ImGui.EndDisabled();
 
