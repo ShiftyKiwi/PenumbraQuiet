@@ -17,7 +17,7 @@ public class ConfigWindow : Window, IDisposable
         Flags = ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse;
 
         Size = new Vector2(420, 330);
-        SizeCondition = ImGuiCond.Always;
+        SizeCondition = ImGuiCond.FirstUseEver;
 
         configuration = plugin.Configuration;
     }
