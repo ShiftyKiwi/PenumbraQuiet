@@ -4,9 +4,9 @@
     "Name": "SILENCEPenumbrussy",
     "Punchline": "Silence Penumbra mod-complete notifications.",
     "Description": "Suppress Penumbra mod-complete toasts and selected error notifications. The command to open the settings menu is /silencepenumbrussy.",
-    "Changelog": "Fix message log pruning by resolving Penumbra's static Messager service.",
+    "Changelog": "Reword error message pruning setting text for clarity.",
     "InternalName": "SILENCEPenumbrussy",
-    "AssemblyVersion": "0.0.0.13",
+    "AssemblyVersion": "0.0.0.14",
     "ApplicableVersion": "2026.03.07.0000.0000",
     "DalamudApiLevel": 14,
     "RepoUrl": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy",
@@ -15,9 +15,9 @@
       "notifications",
       "utility"
     ],
-    "DownloadLinkInstall": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy/releases/download/v0.0.0.13/latest.zip",
-    "DownloadLinkUpdate": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy/releases/download/v0.0.0.13/latest.zip",
-    "DownloadLinkTesting": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy/releases/download/v0.0.0.13/latest.zip",
+    "DownloadLinkInstall": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy/releases/download/v0.0.0.14/latest.zip",
+    "DownloadLinkUpdate": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy/releases/download/v0.0.0.14/latest.zip",
+    "DownloadLinkTesting": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy/releases/download/v0.0.0.14/latest.zip",
     "IsTestingExclusive": false
   }
 ]

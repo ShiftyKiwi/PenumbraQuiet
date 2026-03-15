@@ -17,4 +17,4 @@ Open settings with `/silencepenumbrussy`.
 * Match Penumbra source only: targets only notifications initiated by Penumbra when available.
 * Require both import and extract text: stricter text match to avoid false positives.
 * Suppress error toasts: hides Penumbra error toasts like Forbidden File Redirection or Collection without ID found.
-* Remove from Penumbra messages tab: deletes matching errors from the Messages tab.
+* Automatically prune error messages from Penumbra's Messages tab.

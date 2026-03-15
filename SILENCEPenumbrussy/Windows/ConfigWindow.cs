@@ -88,7 +88,7 @@ public class ConfigWindow : Window, IDisposable
         }
 
         var removeErrorMessages = configuration.RemovePenumbraErrorMessages;
-        if (ImGui.Checkbox("Remove from Penumbra messages tab", ref removeErrorMessages))
+        if (ImGui.Checkbox("Automatically prune error messages from Penumbra's Messages tab", ref removeErrorMessages))
         {
             configuration.RemovePenumbraErrorMessages = removeErrorMessages;
             configuration.Save();
