@@ -1,6 +1,6 @@
 # SILENCEPenumbrussy
 
-SILENCEPenumbrussy suppresses or auto-dismisses Penumbra mod import completion notifications.
+SILENCEPenumbrussy suppresses Penumbra mod import completion notifications and selected error toasts.
 
 ## Custom repo URL
 
@@ -13,7 +13,8 @@ Add this to the Experimental repo URLs list in `/xlsettings`:
 Open settings with `/silencepenumbrussy`.
 
 * Enable filtering: master toggle.
-* Suppress immediately: hides the mod-complete toast on spawn.
-* Auto-dismiss after: dismisses after N seconds.
+* Suppress mod-complete toasts: hides the mod-complete toast on spawn.
 * Match Penumbra source only: targets only notifications initiated by Penumbra when available.
 * Require both import and extract text: stricter text match to avoid false positives.
+* Suppress error toasts: hides Penumbra error toasts like Forbidden File Redirection or Collection without ID found.
+* Remove from Penumbra messages tab: deletes matching errors from the Messages tab.

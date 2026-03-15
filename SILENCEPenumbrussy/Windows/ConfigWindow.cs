@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Numerics;
 using Dalamud.Bindings.ImGui;
-using Dalamud.Interface.Utility;
 using Dalamud.Interface.Windowing;
 
 namespace SilencePenumbrussy.Windows;
@@ -17,7 +16,7 @@ public class ConfigWindow : Window, IDisposable
     {
         Flags = ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse;
 
-        Size = new Vector2(420, 270);
+        Size = new Vector2(420, 330);
         SizeCondition = ImGuiCond.Always;
 
         configuration = plugin.Configuration;
@@ -52,29 +51,11 @@ public class ConfigWindow : Window, IDisposable
 
         ImGui.BeginDisabled(!configuration.Enabled);
         var suppress = configuration.SuppressModComplete;
-        if (ImGui.Checkbox("Suppress immediately", ref suppress))
+        if (ImGui.Checkbox("Suppress mod-complete toasts", ref suppress))
         {
             configuration.SuppressModComplete = suppress;
             configuration.Save();
         }
-
-        var autoDismiss = configuration.AutoDismissModComplete;
-        if (ImGui.Checkbox("Auto-dismiss after", ref autoDismiss))
-        {
-            configuration.AutoDismissModComplete = autoDismiss;
-            configuration.Save();
-        }
-
-        ImGui.SameLine();
-        ImGui.BeginDisabled(!configuration.AutoDismissModComplete);
-        ImGui.SetNextItemWidth(90 * ImGuiHelpers.GlobalScale);
-        var seconds = configuration.AutoDismissSeconds;
-        if (ImGui.SliderInt("##AutoDismissSeconds", ref seconds, 1, 60, "%d s"))
-        {
-            configuration.AutoDismissSeconds = seconds;
-            configuration.Save();
-        }
-        ImGui.EndDisabled();
 
         var matchSource = configuration.MatchPenumbraSource;
         if (ImGui.Checkbox("Match Penumbra source only", ref matchSource))
@@ -92,6 +73,28 @@ public class ConfigWindow : Window, IDisposable
 
         ImGui.Spacing();
         ImGui.TextWrapped("Tip: if Penumbra changes the notification text, relax the text match or disable source matching.");
+
+        ImGui.Spacing();
+        ImGui.Separator();
+        ImGui.Spacing();
+        ImGui.TextUnformatted("Penumbra error notifications");
+        ImGui.Spacing();
+
+        var suppressErrorToasts = configuration.SuppressPenumbraErrorToasts;
+        if (ImGui.Checkbox("Suppress error toasts", ref suppressErrorToasts))
+        {
+            configuration.SuppressPenumbraErrorToasts = suppressErrorToasts;
+            configuration.Save();
+        }
+
+        var removeErrorMessages = configuration.RemovePenumbraErrorMessages;
+        if (ImGui.Checkbox("Remove from Penumbra messages tab", ref removeErrorMessages))
+        {
+            configuration.RemovePenumbraErrorMessages = removeErrorMessages;
+            configuration.Save();
+        }
+
+        ImGui.TextWrapped("Targets \"Forbidden File Redirection\" and \"Collection without ID found\" messages.");
         ImGui.EndDisabled();
 
         ImGui.Spacing();

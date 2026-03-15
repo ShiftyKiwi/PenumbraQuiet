@@ -10,10 +10,10 @@ public class Configuration : IPluginConfiguration
 
     public bool Enabled { get; set; } = true;
     public bool SuppressModComplete { get; set; } = true;
-    public bool AutoDismissModComplete { get; set; } = false;
-    public int AutoDismissSeconds { get; set; } = 5;
     public bool MatchPenumbraSource { get; set; } = true;
     public bool StrictTextMatch { get; set; } = true;
+    public bool SuppressPenumbraErrorToasts { get; set; } = false;
+    public bool RemovePenumbraErrorMessages { get; set; } = false;
     public bool IsConfigWindowMovable { get; set; } = true;
 
     // The below exists just to make saving less cumbersome
