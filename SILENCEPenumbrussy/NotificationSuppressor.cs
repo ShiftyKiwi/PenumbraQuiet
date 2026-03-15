@@ -597,25 +597,33 @@ internal sealed class NotificationSuppressor
                     return false;
                 }
 
-                var messagerProperty = instance.GetType().GetProperty(
+                var penumbraType = instance.GetType();
+                var messagerProperty = penumbraType.GetProperty(
                     "Messager",
-                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                if (messagerProperty == null)
+                    BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                object? messageService = null;
+                if (messagerProperty != null)
                 {
-                    if (debugEnabled && !debugMessagerMissingLogged)
+                    var getter = messagerProperty.GetGetMethod(true);
+                    var target = getter != null && getter.IsStatic ? null : instance;
+                    messageService = messagerProperty.GetValue(target);
+                }
+                else
+                {
+                    var messagerField = penumbraType.GetField(
+                        "Messager",
+                        BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                    if (messagerField != null)
                     {
-                        DebugLog(log, "Penumbra Messager property not found on plugin instance.");
-                        debugMessagerMissingLogged = true;
+                        messageService = messagerField.GetValue(messagerField.IsStatic ? null : instance);
                     }
-                    return false;
                 }
 
-                var messageService = messagerProperty.GetValue(instance);
                 if (messageService == null)
                 {
                     if (debugEnabled && !debugMessagerMissingLogged)
                     {
-                        DebugLog(log, "Penumbra Messager service was null.");
+                        DebugLog(log, "Penumbra Messager property/field not found or not initialized yet.");
                         debugMessagerMissingLogged = true;
                     }
                     return false;
