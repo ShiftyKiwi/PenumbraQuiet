@@ -4,9 +4,9 @@
     "Name": "SILENCEPenumbrussy",
     "Punchline": "Silence Penumbra mod-complete notifications.",
     "Description": "Supress or auto-dismiss Penumbra mod import completion notifications. The command to open the settings menu is /silencepenumbrussy.",
-    "Changelog": "Metadata polish and author name update.",
+    "Changelog": "Resizable settings window.",
     "InternalName": "SILENCEPenumbrussy",
-    "AssemblyVersion": "0.0.0.2",
+    "AssemblyVersion": "0.0.0.3",
     "ApplicableVersion": "2026.03.07.0000.0000",
     "DalamudApiLevel": 14,
     "RepoUrl": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy",
@@ -15,9 +15,9 @@
       "notifications",
       "utility"
     ],
-    "DownloadLinkInstall": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy/releases/download/v0.0.0.2/latest.zip",
-    "DownloadLinkUpdate": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy/releases/download/v0.0.0.2/latest.zip",
-    "DownloadLinkTesting": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy/releases/download/v0.0.0.2/latest.zip",
+    "DownloadLinkInstall": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy/releases/download/v0.0.0.3/latest.zip",
+    "DownloadLinkUpdate": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy/releases/download/v0.0.0.3/latest.zip",
+    "DownloadLinkTesting": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy/releases/download/v0.0.0.3/latest.zip",
     "IsTestingExclusive": false
   }
 ]

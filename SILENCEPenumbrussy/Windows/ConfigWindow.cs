@@ -15,10 +15,9 @@ public class ConfigWindow : Window, IDisposable
     // and the window ID will always be "###XYZ counter window" for ImGui
     public ConfigWindow(Plugin plugin) : base("SILENCEPenumbrussy Settings###SILENCEPenumbrussyConfig")
     {
-        Flags = ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar |
-                ImGuiWindowFlags.NoScrollWithMouse;
+        Flags = ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse;
 
-        Size = new Vector2(420, 250);
+        Size = new Vector2(420, 270);
         SizeCondition = ImGuiCond.Always;
 
         configuration = plugin.Configuration;
