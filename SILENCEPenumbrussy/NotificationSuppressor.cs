@@ -146,7 +146,8 @@ internal sealed class NotificationSuppressor
             }
         }
 
-        return false;
+        var fallback = message.ToString();
+        return !string.IsNullOrWhiteSpace(fallback) && ContainsPenumbraErrorText(fallback);
     }
 
     private static IEnumerable<string> EnumerateMessageTextCandidates(object message)
@@ -235,7 +236,9 @@ internal sealed class NotificationSuppressor
         }
 
         var typeName = value.GetType().FullName;
-        if (string.Equals(typeName, "ImSharp.StringU8", StringComparison.Ordinal))
+        if (!string.IsNullOrEmpty(typeName) &&
+            (typeName.Contains("StringU8", StringComparison.Ordinal) ||
+                typeName.Contains("InlineStringU8", StringComparison.Ordinal)))
         {
             return value.ToString();
         }
