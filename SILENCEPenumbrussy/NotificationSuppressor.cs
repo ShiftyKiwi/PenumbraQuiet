@@ -138,6 +138,14 @@ internal sealed class NotificationSuppressor
             }
         }
 
+        foreach (var candidate in EnumerateAdditionalMessageTextCandidates(message))
+        {
+            if (ContainsPenumbraErrorText(candidate))
+            {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -160,6 +168,79 @@ internal sealed class NotificationSuppressor
                 yield return value!;
             }
         }
+    }
+
+    private static IEnumerable<string> EnumerateAdditionalMessageTextCandidates(object message)
+    {
+        var flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+        var type = message.GetType();
+
+        foreach (var property in type.GetProperties(flags))
+        {
+            if (property.GetIndexParameters().Length != 0)
+            {
+                continue;
+            }
+
+            string? text = null;
+            try
+            {
+                text = TryGetTextFromValue(property.GetValue(message));
+            }
+            catch
+            {
+                continue;
+            }
+
+            if (!string.IsNullOrWhiteSpace(text))
+            {
+                yield return text!;
+            }
+        }
+
+        foreach (var field in type.GetFields(flags))
+        {
+            string? text = null;
+            try
+            {
+                text = TryGetTextFromValue(field.GetValue(message));
+            }
+            catch
+            {
+                continue;
+            }
+
+            if (!string.IsNullOrWhiteSpace(text))
+            {
+                yield return text!;
+            }
+        }
+    }
+
+    private static string? TryGetTextFromValue(object? value)
+    {
+        if (value == null)
+        {
+            return null;
+        }
+
+        if (value is string text)
+        {
+            return text;
+        }
+
+        if (value is SeString seString)
+        {
+            return seString.TextValue;
+        }
+
+        var typeName = value.GetType().FullName;
+        if (string.Equals(typeName, "ImSharp.StringU8", StringComparison.Ordinal))
+        {
+            return value.ToString();
+        }
+
+        return null;
     }
 
     private static string? TryGetStringProperty(Type type, object message, string propertyName)
