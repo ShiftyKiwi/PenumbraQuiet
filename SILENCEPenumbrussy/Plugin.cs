@@ -33,7 +33,8 @@ public sealed class Plugin : IDalamudPlugin
 
         CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
         {
-            HelpMessage = "Open SILENCEPenumbrussy settings"
+            HelpMessage = string.Empty,
+            ShowInHelp = false
         });
 
         // Tell the UI system that we want our windows to be drawn through the window system

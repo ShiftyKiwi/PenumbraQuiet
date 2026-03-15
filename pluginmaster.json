@@ -1,9 +1,9 @@
 [
   {
-    "Author": "Shifty Kiwi",
+    "Author": "ShiftyKiwi",
     "Name": "SILENCEPenumbrussy",
     "Punchline": "Silence Penumbra mod-complete notifications.",
-    "Description": "Suppress or auto-dismiss Penumbra mod import completion notifications. Command: /silencepenumbrussy",
+    "Description": "Supress or auto-dismiss Penumbra mod import completion notifications. The command to open the settings menu is /silencepenumbrussy.",
     "Changelog": "Initial release.",
     "InternalName": "SILENCEPenumbrussy",
     "AssemblyVersion": "0.0.0.1",
