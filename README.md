@@ -2,6 +2,10 @@
 
 SILENCEPenumbrussy suppresses Penumbra mod-complete toasts and selected error notifications.
 
+## Troubleshooting notice
+
+If you experience issues with Penumbra while using this plugin, first disable SILENCEPenumbrussy and retest. If the issue persists, report it to Penumbra. If it disappears, please report the issue to ShiftyKiwi on GitHub.
+
 ## Custom repo URL
 
 Add this to the Experimental repo URLs list in `/xlsettings`:
