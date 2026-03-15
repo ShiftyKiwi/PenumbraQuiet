@@ -1,0 +1,12 @@
+{
+  "Author": "Shifty Kiwi",
+  "Name": "SILENCEPenumbrussy",
+  "Punchline": "Silence Penumbra mod-complete notifications.",
+  "Description": "Suppress or auto-dismiss Penumbra mod import completion notifications. Command: /silencepenumbrussy",
+  "ApplicableVersion": "2026.03.07.0000.0000",
+  "Tags": [
+    "penumbra",
+    "notifications",
+    "utility"
+  ]
+}
