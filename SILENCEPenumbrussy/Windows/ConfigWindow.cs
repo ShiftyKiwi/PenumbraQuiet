@@ -40,7 +40,7 @@ public class ConfigWindow : Window, IDisposable
     public override void Draw()
     {
         ImGui.PushStyleColor(ImGuiCol.Text, new Vector4(1f, 0.8f, 0.2f, 1f));
-        ImGui.TextWrapped("Warning: if you experience Penumbra issues while using this plugin, disable SILENCEPenumbrussy and retest. If the issue persists, report it to Penumbra. If it disappears, please report it to ShiftyKiwi on GitHub.");
+        ImGui.TextWrapped("⚠ Troubleshooting Notice\n\nThis plugin may hide certain Penumbra error messages and notifications.\n\nIf you experience issues with your mods, disable SILENCEPenumbrussy and reproduce the issue before requesting support in the Penumbra Discord server.\n\nIf the issue disappears after disabling this plugin, it may be related to SILENCEPenumbrussy. Please report plugin-related issues on the GitHub repository.");
         ImGui.PopStyleColor();
         ImGui.Spacing();
 
