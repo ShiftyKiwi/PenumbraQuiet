@@ -1,7 +1,7 @@
 ﻿using Dalamud.Configuration;
 using System;
 
-namespace SilencePenumbrussy;
+namespace PenumbraQuiet;
 
 [Serializable]
 public class Configuration : IPluginConfiguration

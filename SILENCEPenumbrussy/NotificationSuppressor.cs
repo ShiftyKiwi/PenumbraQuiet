@@ -8,7 +8,7 @@ using Dalamud.Interface.ImGuiNotification;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 
-namespace SilencePenumbrussy;
+namespace PenumbraQuiet;
 
 internal sealed class NotificationSuppressor
 {

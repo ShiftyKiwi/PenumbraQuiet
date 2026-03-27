@@ -3,9 +3,9 @@ using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
-using SilencePenumbrussy.Windows;
+using PenumbraQuiet.Windows;
 
-namespace SilencePenumbrussy;
+namespace PenumbraQuiet;
 
 public sealed class Plugin : IDalamudPlugin
 {

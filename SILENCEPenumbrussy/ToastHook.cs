@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using Dalamud.Plugin.Services;
 
-namespace SilencePenumbrussy;
+namespace PenumbraQuiet;
 
 internal sealed class ToastHook : IDisposable
 {
