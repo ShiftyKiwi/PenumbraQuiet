@@ -280,6 +280,7 @@ internal sealed class NotificationSuppressor
         return text.Contains("Forbidden File Redirection", StringComparison.OrdinalIgnoreCase)
             || text.Contains("Forbidden File Encountered", StringComparison.OrdinalIgnoreCase)
             || text.Contains("Redirection of these files is forbidden", StringComparison.OrdinalIgnoreCase)
+            || text.Contains("Reserved File Redirection", StringComparison.OrdinalIgnoreCase)
             || text.Contains("Collection without ID", StringComparison.OrdinalIgnoreCase);
     }
 
@@ -393,7 +394,7 @@ internal sealed class NotificationSuppressor
                 if (!warned)
                 {
                     warned = true;
-                    log.Warning(ex, "SILENCEPenumbrussy: failed to initialize Penumbra message hooks.");
+                    log.Warning(ex, "PenumbraQuiet: failed to initialize Penumbra message hooks.");
                 }
 
                 failed = true;
@@ -530,7 +531,7 @@ internal sealed class NotificationSuppressor
                 if (!warned)
                 {
                     warned = true;
-                    log.Warning(ex, "SILENCEPenumbrussy: failed to prune Penumbra messages.");
+                    log.Warning(ex, "PenumbraQuiet: failed to prune Penumbra messages.");
                 }
             }
         }
@@ -807,7 +808,7 @@ internal sealed class NotificationSuppressor
             if (!warned)
             {
                 warned = true;
-                log.Warning("SILENCEPenumbrussy: {Message}", message);
+                log.Warning("PenumbraQuiet: {Message}", message);
             }
 
             failed = true;
@@ -907,7 +908,7 @@ internal sealed class NotificationSuppressor
 
         private void DebugLog(IPluginLog log, string message)
         {
-            log.Information("SILENCEPenumbrussy debug: {Message}", message);
+            log.Information("PenumbraQuiet debug: {Message}", message);
         }
 
         private void DebugLogNotAvailable(IPluginLog log, bool debugEnabled)
@@ -1035,7 +1036,7 @@ internal sealed class NotificationSuppressor
                 if (!warned)
                 {
                     warned = true;
-                    log.Warning(ex, "SILENCEPenumbrussy: failed to initialize notification hooks.");
+                    log.Warning(ex, "PenumbraQuiet: failed to initialize notification hooks.");
                 }
 
                 failed = true;
@@ -1098,7 +1099,7 @@ internal sealed class NotificationSuppressor
             if (!warned)
             {
                 warned = true;
-                log.Warning("SILENCEPenumbrussy: {Message}", message);
+                log.Warning("PenumbraQuiet: {Message}", message);
             }
 
             failed = true;

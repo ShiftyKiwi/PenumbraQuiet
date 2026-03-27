@@ -76,6 +76,6 @@ internal sealed class ToastHook : IDisposable
         }
 
         warned = true;
-        log.Warning("SILENCEPenumbrussy: {Message}", message);
+        log.Warning("PenumbraQuiet: {Message}", message);
     }
 }

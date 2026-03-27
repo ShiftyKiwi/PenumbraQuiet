@@ -15,11 +15,11 @@ public sealed class Plugin : IDalamudPlugin
     [PluginService] internal static IPluginLog Log { get; private set; } = null!;
     [PluginService] internal static IToastGui ToastGui { get; private set; } = null!;
 
-    private const string CommandName = "/silencepenumbrussy";
+    private const string CommandName = "/penumbraquiet";
 
     public Configuration Configuration { get; init; }
 
-    public readonly WindowSystem WindowSystem = new("SILENCEPenumbrussy");
+    public readonly WindowSystem WindowSystem = new("PenumbraQuiet");
     private ConfigWindow ConfigWindow { get; init; }
     private NotificationSuppressor NotificationSuppressor { get; init; }
     private ToastHook ToastHook { get; init; }
@@ -46,13 +46,14 @@ public sealed class Plugin : IDalamudPlugin
         // This adds a button to the plugin installer entry of this plugin which allows
         // toggling the display status of the configuration ui
         PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUi;
+        PluginInterface.UiBuilder.OpenMainUi += ToggleConfigUi;
 
         Framework.Update += NotificationSuppressor.Update;
         ToastHook.Initialize(ToastGui);
 
         // Add a simple message to the log with level set to information
         // Use /xllog to open the log window in-game
-        // Example Output: 00:57:54.959 | INF | [SILENCEPenumbrussy] SILENCEPenumbrussy loaded.
+        // Example Output: 00:57:54.959 | INF | [PenumbraQuiet] PenumbraQuiet loaded.
         Log.Information($"{PluginInterface.Manifest.Name} loaded.");
     }
 
@@ -61,6 +62,7 @@ public sealed class Plugin : IDalamudPlugin
         // Unregister all actions to not leak anything during disposal of plugin
         PluginInterface.UiBuilder.Draw -= WindowSystem.Draw;
         PluginInterface.UiBuilder.OpenConfigUi -= ToggleConfigUi;
+        PluginInterface.UiBuilder.OpenMainUi -= ToggleConfigUi;
         Framework.Update -= NotificationSuppressor.Update;
         ToastHook.Dispose();
         

@@ -12,7 +12,7 @@ public class ConfigWindow : Window, IDisposable
     // We give this window a constant ID using ###.
     // This allows for labels to be dynamic, like "{FPS Counter}fps###XYZ counter window",
     // and the window ID will always be "###XYZ counter window" for ImGui
-    public ConfigWindow(Plugin plugin) : base("SILENCEPenumbrussy Settings###SILENCEPenumbrussyConfig")
+    public ConfigWindow(Plugin plugin) : base("PenumbraQuiet Settings###PenumbraQuietConfig")
     {
         Flags = ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse;
 
@@ -40,7 +40,7 @@ public class ConfigWindow : Window, IDisposable
     public override void Draw()
     {
         ImGui.PushStyleColor(ImGuiCol.Text, new Vector4(1f, 0.8f, 0.2f, 1f));
-        ImGui.TextWrapped("⚠ Troubleshooting Notice\n\nThis plugin may hide certain Penumbra error messages and notifications.\n\nIf you experience issues with your mods, disable SILENCEPenumbrussy and reproduce the issue before requesting support in the Penumbra Discord server.\n\nIf the issue disappears after disabling this plugin, it may be related to SILENCEPenumbrussy. Please report plugin-related issues on the GitHub repository.");
+        ImGui.TextWrapped("⚠ Troubleshooting Notice\n\nThis plugin may hide certain Penumbra error messages and notifications.\n\nIf you experience issues with your mods, disable PenumbraQuiet and reproduce the issue before requesting support in the Penumbra Discord server.\n\nIf the issue disappears after disabling this plugin, it may be related to PenumbraQuiet. Please report plugin-related issues on the GitHub repository.");
         ImGui.PopStyleColor();
         ImGui.Spacing();
 
@@ -106,7 +106,7 @@ public class ConfigWindow : Window, IDisposable
             configuration.Save();
         }
 
-        ImGui.TextWrapped("Targets \"Forbidden File Encountered\", \"Forbidden File Redirection\", and \"Collection without ID found\" messages.");
+        ImGui.TextWrapped("Targets \"Forbidden File Encountered\", \"Forbidden File Redirection\", \"Reserved File Redirection\", and \"Collection without ID found\" messages.");
         ImGui.EndDisabled();
 
         ImGui.Spacing();
