@@ -4,10 +4,10 @@
     "Name": "SILENCEPenumbrussy",
     "Punchline": "Silence Penumbra mod-complete notifications.",
     "Description": "Suppress Penumbra mod-complete toasts and selected error notifications. The command to open the settings menu is /silencepenumbrussy.",
-    "Changelog": "Expand troubleshooting notice wording in the README and settings UI.",
+    "Changelog": "Validate for Patch 7.45 Hotfix 2 (2026.03.17).",
     "InternalName": "SILENCEPenumbrussy",
-    "AssemblyVersion": "0.0.0.17",
-    "ApplicableVersion": "2026.03.07.0000.0000",
+    "AssemblyVersion": "0.0.0.18",
+    "ApplicableVersion": "2026.03.17.0000.0000",
     "DalamudApiLevel": 14,
     "RepoUrl": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy",
     "Tags": [
@@ -15,9 +15,9 @@
       "notifications",
       "utility"
     ],
-    "DownloadLinkInstall": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy/releases/download/v0.0.0.17/latest.zip",
-    "DownloadLinkUpdate": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy/releases/download/v0.0.0.17/latest.zip",
-    "DownloadLinkTesting": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy/releases/download/v0.0.0.17/latest.zip",
+    "DownloadLinkInstall": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy/releases/download/v0.0.0.18/latest.zip",
+    "DownloadLinkUpdate": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy/releases/download/v0.0.0.18/latest.zip",
+    "DownloadLinkTesting": "https://github.com/ShiftyKiwi/SILENCEPenumbrussy/releases/download/v0.0.0.18/latest.zip",
     "IsTestingExclusive": false
   }
 ]
