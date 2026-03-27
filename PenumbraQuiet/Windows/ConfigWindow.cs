@@ -40,11 +40,11 @@ public class ConfigWindow : Window, IDisposable
     public override void Draw()
     {
         ImGui.PushStyleColor(ImGuiCol.Text, new Vector4(1f, 0.8f, 0.2f, 1f));
-        ImGui.TextWrapped("⚠ Troubleshooting Notice\n\nThis plugin may hide certain Penumbra error messages and notifications.\n\nIf you experience issues with your mods, disable PenumbraQuiet and reproduce the issue before requesting support in the Penumbra Discord server.\n\nIf the issue disappears after disabling this plugin, it may be related to PenumbraQuiet. Please report plugin-related issues on the GitHub repository.");
+        ImGui.TextWrapped("⚠ Troubleshooting Notice\n\nThis plugin can hide some Penumbra error messages and notifications.\n\nIf you run into mod issues, disable PenumbraQuiet and check whether the issue still happens before asking for help in the Penumbra Discord server.\n\nIf the issue goes away with PenumbraQuiet disabled, please report it on this plugin's GitHub repository.");
         ImGui.PopStyleColor();
         ImGui.Spacing();
 
-        ImGui.TextUnformatted("Penumbra mod-complete notifications");
+        ImGui.TextUnformatted("Mod-complete notifications");
         ImGui.Spacing();
 
         var enabled = configuration.Enabled;
@@ -56,62 +56,62 @@ public class ConfigWindow : Window, IDisposable
 
         ImGui.BeginDisabled(!configuration.Enabled);
         var suppress = configuration.SuppressModComplete;
-        if (ImGui.Checkbox("Suppress mod-complete toasts", ref suppress))
+        if (ImGui.Checkbox("Hide mod-complete pop-ups", ref suppress))
         {
             configuration.SuppressModComplete = suppress;
             configuration.Save();
         }
 
         var matchSource = configuration.MatchPenumbraSource;
-        if (ImGui.Checkbox("Match Penumbra source only", ref matchSource))
+        if (ImGui.Checkbox("Only hide notifications from Penumbra", ref matchSource))
         {
             configuration.MatchPenumbraSource = matchSource;
             configuration.Save();
         }
 
         var strictMatch = configuration.StrictTextMatch;
-        if (ImGui.Checkbox("Require both import and extract text", ref strictMatch))
+        if (ImGui.Checkbox("Use stricter text matching", ref strictMatch))
         {
             configuration.StrictTextMatch = strictMatch;
             configuration.Save();
         }
 
         ImGui.Spacing();
-        ImGui.TextWrapped("Tip: if Penumbra changes the notification text, relax the text match or disable source matching.");
+        ImGui.TextWrapped("Tip: if Penumbra changes the notification text, make text matching less strict or turn off \"Only hide notifications from Penumbra.\"");
 
         ImGui.Spacing();
         ImGui.Separator();
         ImGui.Spacing();
-        ImGui.TextUnformatted("Penumbra error notifications");
+        ImGui.TextUnformatted("Error notifications");
         ImGui.Spacing();
 
         var suppressErrorToasts = configuration.SuppressPenumbraErrorToasts;
-        if (ImGui.Checkbox("Suppress error toasts", ref suppressErrorToasts))
+        if (ImGui.Checkbox("Hide error pop-ups", ref suppressErrorToasts))
         {
             configuration.SuppressPenumbraErrorToasts = suppressErrorToasts;
             configuration.Save();
         }
 
         var removeErrorMessages = configuration.RemovePenumbraErrorMessages;
-        if (ImGui.Checkbox("Automatically prune error messages logged in Penumbra's Messages tab", ref removeErrorMessages))
+        if (ImGui.Checkbox("Automatically remove matching errors from Penumbra's Messages tab", ref removeErrorMessages))
         {
             configuration.RemovePenumbraErrorMessages = removeErrorMessages;
             configuration.Save();
         }
 
         var debugMessages = configuration.DebugPenumbraMessages;
-        if (ImGui.Checkbox("Debug message pruning (logs to /xllog)", ref debugMessages))
+        if (ImGui.Checkbox("Debug message removal (writes details to /xllog)", ref debugMessages))
         {
             configuration.DebugPenumbraMessages = debugMessages;
             configuration.Save();
         }
 
-        ImGui.TextWrapped("Targets \"Forbidden File Encountered\", \"Forbidden File Redirection\", \"Reserved File Redirection\", and \"Collection without ID found\" messages.");
+        ImGui.TextWrapped("Applies to these messages: \"Forbidden File Encountered\", \"Forbidden File Redirection\", \"Reserved File Redirection\", and \"Collection without ID found\".");
         ImGui.EndDisabled();
 
         ImGui.Spacing();
         var movable = configuration.IsConfigWindowMovable;
-        if (ImGui.Checkbox("Movable Config Window", ref movable))
+        if (ImGui.Checkbox("Allow moving the settings window", ref movable))
         {
             configuration.IsConfigWindowMovable = movable;
             configuration.Save();

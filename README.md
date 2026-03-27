@@ -1,22 +1,16 @@
 # PenumbraQuiet
 
-PenumbraQuiet suppresses Penumbra mod-complete toasts and selected error notifications.
+PenumbraQuiet hides Penumbra mod-complete pop-ups and some error notifications.
 
 ## Troubleshooting Notice
 
-By using this plugin, you acknowledge that certain Penumbra error messages
-and notifications may be intentionally hidden.
+This plugin can hide some Penumbra error messages and notifications.
 
-If you encounter issues with your mods, disable PenumbraQuiet and
-reproduce the issue before requesting support in the Penumbra Discord server.
+If you run into mod issues, disable PenumbraQuiet and check whether the issue
+still happens before asking for help in the Penumbra Discord server.
 
-Many problems reported to Penumbra developers are normally visible through
-error toasts or message logs that this plugin may suppress. Please verify
-that the issue still occurs with this plugin disabled before requesting support.
-
-If the issue disappears after disabling PenumbraQuiet, it may be related
-to this plugin. In that case, please report the issue on this repository's
-GitHub issue tracker.
+If the issue goes away with PenumbraQuiet disabled, please report it on this
+repository's GitHub issue tracker.
 
 ## Custom repo URL
 
@@ -28,9 +22,9 @@ Add this to the Experimental repo URLs list in `/xlsettings`:
 
 Open settings with `/penumbraquiet`.
 
-* Enable filtering: master toggle.
-* Suppress mod-complete toasts: hides the mod-complete toast on spawn.
-* Match Penumbra source only: targets only notifications initiated by Penumbra when available.
-* Require both import and extract text: stricter text match to avoid false positives.
-* Suppress error toasts: hides Penumbra error toasts like Forbidden File Encountered / Forbidden File Redirection / Reserved File Redirection or Collection without ID found.
-* Automatically prune error messages logged in Penumbra's Messages tab.
+* Enable filtering: turns filtering on or off.
+* Hide mod-complete pop-ups: hides the mod-complete pop-up.
+* Only hide notifications from Penumbra.
+* Use stricter text matching.
+* Hide error pop-ups like Forbidden File Encountered / Forbidden File Redirection / Reserved File Redirection or Collection without ID found.
+* Automatically remove matching errors from Penumbra's Messages tab.
