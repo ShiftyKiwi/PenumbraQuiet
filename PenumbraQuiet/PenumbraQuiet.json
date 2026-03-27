@@ -1,8 +1,8 @@
 {
   "Author": "ShiftyKiwi",
   "Name": "PenumbraQuiet",
-  "Punchline": "Quiet Penumbra mod-complete notifications.",
-  "Description": "Suppress Penumbra mod-complete toasts and selected error notifications. The command to open the settings menu is /penumbraquiet.",
+  "Punchline": "Hide Penumbra mod-complete pop-ups.",
+  "Description": "Hide Penumbra mod-complete pop-ups and some error notifications. Open settings with /penumbraquiet.",
   "ApplicableVersion": "2026.03.17.0000.0000",
   "Tags": [
     "penumbra",
