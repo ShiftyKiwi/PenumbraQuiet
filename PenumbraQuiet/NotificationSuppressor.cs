@@ -281,6 +281,7 @@ internal sealed class NotificationSuppressor
             || text.Contains("Forbidden File Encountered", StringComparison.OrdinalIgnoreCase)
             || text.Contains("Redirection of these files is forbidden", StringComparison.OrdinalIgnoreCase)
             || text.Contains("Reserved File Redirection", StringComparison.OrdinalIgnoreCase)
+            || text.Contains("No Metadata found for", StringComparison.OrdinalIgnoreCase)
             || text.Contains("Collection without ID", StringComparison.OrdinalIgnoreCase);
     }
 
