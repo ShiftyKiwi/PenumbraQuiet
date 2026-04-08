@@ -106,7 +106,7 @@ public class ConfigWindow : Window, IDisposable
             configuration.Save();
         }
 
-        ImGui.TextWrapped("Applies to these messages: \"Forbidden File Encountered\", \"Forbidden File Redirection\", \"Reserved File Redirection\", \"No Metadata found for\", and \"Collection without ID found\".");
+        ImGui.TextWrapped("Applies to these messages: \"Forbidden File Encountered\", \"Forbidden File Redirection\", \"Reserved File Redirection\", \"No Metadata found for\", \"Failed to load mod\", and \"Collection without ID found\".");
         ImGui.EndDisabled();
 
         ImGui.Spacing();
