@@ -3,7 +3,12 @@
   "Name": "PenumbraQuiet",
   "Punchline": "Hide Penumbra mod-complete pop-ups.",
   "Description": "Hide Penumbra mod-complete pop-ups and some error notifications. Open settings with /penumbraquiet.",
-  "ApplicableVersion": "2026.03.17.0000.0000",
+  "InternalName": "PenumbraQuiet",
+  "AssemblyVersion": "0.0.0.26",
+  "ApplicableVersion": "any",
+  "DalamudApiLevel": 15,
+  "RepoUrl": "https://github.com/ShiftyKiwi/PenumbraQuiet",
+  "Changelog": "Updated for FFXIV Patch 7.5 and Dalamud API15.",
   "Tags": [
     "penumbra",
     "notifications",
