@@ -26,5 +26,5 @@ Open settings with `/penumbraquiet`.
 * Hide mod-complete pop-ups: hides the mod-complete pop-up.
 * Only hide notifications from Penumbra.
 * Use stricter text matching.
-* Hide error pop-ups like Forbidden File Encountered / Forbidden File Redirection / Reserved File Redirection / No Metadata found for / Failed to load mod or Collection without ID found.
+* Hide error pop-ups like Forbidden File Encountered / Forbidden File Redirection / Reserved File Redirection / No Metadata found / Failed to load mod / Cowardly refusing to load replacement for / Could not load an unknown individual collection or Collection without ID found.
 * Automatically remove matching errors from Penumbra's Messages tab.
