@@ -4,7 +4,7 @@
   "Punchline": "Hide Penumbra mod-complete pop-ups.",
   "Description": "Hide Penumbra mod-complete pop-ups and some error notifications. Open settings with /penumbraquiet.",
   "InternalName": "PenumbraQuiet",
-  "AssemblyVersion": "0.0.0.26",
+  "AssemblyVersion": "0.0.0.27",
   "ApplicableVersion": "any",
   "DalamudApiLevel": 15,
   "RepoUrl": "https://github.com/ShiftyKiwi/PenumbraQuiet",
